@@ -1,12 +1,22 @@
+use futures::FutureExt;
 use linera_sdk::base::{Amount, Owner};
 use linera_sdk::views::{MapView, ViewStorageContext};
-use linera_views::views::{GraphQLView, RootView};
+use linera_views::views::{GraphQLView, RootView, View};
 use thiserror::Error;
 
 #[derive(RootView, GraphQLView)]
 #[view(context = "ViewStorageContext")]
 pub struct FungibleToken {
     accounts: MapView<Owner, Amount>,
+}
+
+#[cfg(test)]
+impl FungibleToken {
+    pub fn dummy() -> Self {
+        linera_sdk::test::mock_key_value_store();
+        let store = ViewStorageContext::default();
+        FungibleToken::load(store).now_or_never().unwrap().unwrap()
+    }
 }
 
 #[allow(dead_code)]

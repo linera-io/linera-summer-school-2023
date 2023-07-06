@@ -31,7 +31,7 @@ pub enum Operation {
     },
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Eq, PartialEq)]
 pub enum Message {
     Credit { amount: Amount, owner: Owner },
 }
