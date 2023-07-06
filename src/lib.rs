@@ -7,7 +7,7 @@ pub struct FungibleAbi;
 
 impl ContractAbi for FungibleAbi {
     type Parameters = ();
-    type InitializationArgument = ();
+    type InitializationArgument = Amount;
     type Operation = Operation;
     type Message = Message;
     type ApplicationCall = ();
@@ -36,7 +36,9 @@ pub enum Message {
     Credit { amount: Amount, owner: Owner },
 }
 
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize, InputObject)]
+#[derive(
+    Clone, Copy, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize, InputObject,
+)]
 pub struct Account {
     pub chain_id: ChainId,
     pub owner: Owner,

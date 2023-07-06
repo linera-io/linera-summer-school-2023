@@ -13,7 +13,6 @@ use linera_sdk::{
     ApplicationCallResult, CalleeContext, Contract, ExecutionResult, MessageContext,
     OperationContext, SessionCallResult, ViewStateStorage,
 };
-use std::str::FromStr;
 use thiserror::Error;
 
 linera_sdk::contract!(FungibleToken);
@@ -30,11 +29,10 @@ impl Contract for FungibleToken {
     async fn initialize(
         &mut self,
         _context: &OperationContext,
-        _argument: Self::InitializationArgument,
+        argument: Self::InitializationArgument,
     ) -> Result<ExecutionResult<Self::Message>, Self::Error> {
         if let Some(owner) = _context.authenticated_signer {
-            self.initialize_accounts(owner, Amount::from_str("1_000_000").unwrap())
-                .await
+            self.initialize_accounts(owner, argument).await
         }
         Ok(ExecutionResult::default())
     }
