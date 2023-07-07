@@ -38,14 +38,18 @@ struct MutationRoot;
 #[Object]
 impl MutationRoot {
     async fn transfer(&self, owner: Owner, amount: Amount, target_account: Account) -> Vec<u8> {
-        bcs::to_bytes(&Operation::Transfer { owner, amount, target_account }).unwrap()
+        bcs::to_bytes(&Operation::Transfer {
+            owner,
+            amount,
+            target_account,
+        })
+        .unwrap()
     }
 }
 
 /// An error that can occur while querying the service.
 #[derive(Debug, Error)]
 pub enum ServiceError {
-
     /// Invalid query argument; could not deserialize request.
     #[error("Invalid query argument; could not deserialize request")]
     InvalidQuery(#[from] serde_json::Error),

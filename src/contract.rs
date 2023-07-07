@@ -29,10 +29,10 @@ impl Contract for FungibleToken {
     async fn initialize(
         &mut self,
         _context: &OperationContext,
-        argument: Self::InitializationArgument,
+        amount: Amount,
     ) -> Result<ExecutionResult<Self::Message>, Self::Error> {
         if let Some(owner) = _context.authenticated_signer {
-            self.initialize_accounts(owner, argument).await
+            self.initialize_accounts(owner, amount).await
         }
         Ok(ExecutionResult::default())
     }
