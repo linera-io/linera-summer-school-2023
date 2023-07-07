@@ -142,3 +142,57 @@ pub enum Error {
     #[error("Sessions not supported")]
     SessionsNotSupported,
 }
+
+#[cfg(test)]
+#[cfg(target_arch = "wasm32")]
+pub mod tests {
+    use super::*;
+    use futures::FutureExt;
+    use linera_sdk::base::{BlockHeight, ChainId};
+    use linera_sdk::views::ViewStorageContext;
+    use linera_sdk::{Contract, OperationContext};
+    use linera_views::views::View;
+    use std::str::FromStr;
+
+    use webassembly_test::webassembly_test;
+
+    #[webassembly_test]
+    pub fn init() {
+        let initial_amount = Amount::from_str("50_000").unwrap();
+        let fungible = create_and_init(initial_amount);
+        assert_eq!(
+            fungible.balance(&creator()).now_or_never().unwrap(),
+            initial_amount
+        )
+    }
+
+    fn create_and_init(amount: Amount) -> FungibleToken {
+        linera_sdk::test::mock_key_value_store();
+        let store = ViewStorageContext::default();
+        let mut fungible_token = FungibleToken::load(store).now_or_never().unwrap().unwrap();
+
+        let result = fungible_token
+            .initialize(&dummy_context(), amount)
+            .now_or_never()
+            .unwrap();
+
+        assert!(result.is_ok());
+
+        fungible_token
+    }
+
+    fn dummy_context() -> OperationContext {
+        OperationContext {
+            chain_id: ChainId([0; 4].into()),
+            authenticated_signer: Some(creator()),
+            height: BlockHeight(0),
+            index: 0,
+        }
+    }
+
+    fn creator() -> Owner {
+        "1c02a28d03e846b113de238d8880df3c9c802143b73aea5d173466701bee1786"
+            .parse()
+            .unwrap()
+    }
+}
