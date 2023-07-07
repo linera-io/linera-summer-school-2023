@@ -31,9 +31,3 @@ path = "src/contract.rs"
 [[bin]]
 name = "fungible_service"
 path = "src/service.rs"
-#
-#[profile.release]
-#debug = true
-#lto = true
-#opt-level = 'z'
-#strip = 'debuginfo'
